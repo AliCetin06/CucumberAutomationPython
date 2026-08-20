@@ -20,7 +20,7 @@ def before_tag(context, tag):
     Belirtilen tag çalıştırılmadan önce devreye girer.
     """
     if tag == "ie":
-        # IE veya özel tag hazırlık verilerini buraya ekleyebilirsiniz
+        # IE veya özel tag hazırlık verilerini buraya ekleyebiliriz
         pass
 
 

@@ -1,9 +1,9 @@
-from behave import when, then
+from behave import when, then, step
 from pages.home_page import HomePage
 from utils.driver_utils import DriverUtils
 
-
-@then('verify user is navigated to home page')
+# Using @step allows this step to match 'When', 'Then', or 'And' keywords in Gherkin
+@step('verify user is navigated to home page')
 def verify_user_is_navigated_to_homepage(context):
     context.home_page = HomePage(DriverUtils.get_driver())
     context.home_page.validate_home_page()
