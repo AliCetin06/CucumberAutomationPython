@@ -6,7 +6,7 @@ class PropertyReader:
     _prop = configparser.ConfigParser()
 
     @classmethod
-    def init_property(cls, file_path: str = "/Users/alicetin/Desktop/eclipse/CucumberAutomation/src/test/resources/config/config.properties") -> None:
+    def init_property(cls, file_path: str = "/Users/alicetin/Desktop/PyCharm/CucumberAutomationPython/resources/config/config.properties") -> None:
         """
         config.properties dosyasını yükler.
         configparser varsayılan olarak [section] başlıkları bekler.
