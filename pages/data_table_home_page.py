@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from pages.base_page import BasePage
 
 
@@ -31,6 +32,12 @@ class DataTableHomePage(BasePage):
 
                 # Hücrenin yüklenmesini bekleyip metnini çekiyoruz
                 cell_element = self.wait_for_element_to_be_visible(cell_xpath)
+
+                # Hücrenin AJAX verisiyle dolmasını bekle (Loading... olmamalı)
+                WebDriverWait(self.driver, 10).until(
+                    lambda d: d.find_element(*cell_xpath).get_attribute("innerText").strip() != "Loading..."
+                )
+
                 actual_value = cell_element.get_attribute("innerText").strip()
 
                 assert actual_value == expected_value, (
@@ -40,6 +47,13 @@ class DataTableHomePage(BasePage):
     def verify_data_table_data_with_header(self, list_of_map):
         """Header'lı (Map) tablo doğrulaması."""
         self.wait_for_element_to_be_visible(self.VERIFY_DATA)
+
+        # Tablonun AJAX verisiyle dolmasını bekle
+        first_cell_xpath = (By.XPATH, "//table[@id='myTable']/tbody/tr[1]/td[1]")
+        WebDriverWait(self.driver, 10).until(
+            lambda d: d.find_element(*first_cell_xpath).get_attribute("innerText").strip() != "Loading..."
+        )
+
         rows = self.driver.find_elements(*self.TABLE_ROWS)
 
         for i, expected_map in enumerate(list_of_map):
@@ -47,4 +61,6 @@ class DataTableHomePage(BasePage):
             actual_name = cells[0].get_attribute("innerText").strip()
             expected_name = expected_map.get("Name")
 
-            assert actual_name == expected_name, f"Row {i + 1} Name mismatch! Expected: '{expected_name}', Actual: '{expected_name}'"
+            assert actual_name == expected_name, (
+                f"Row {i + 1} Name mismatch! Expected: '{expected_name}', Actual: '{actual_name}'"
+            )
