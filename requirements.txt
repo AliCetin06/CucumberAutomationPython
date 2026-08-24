@@ -2,3 +2,5 @@ behave
 selenium
 openpyxl
 behave-html-formatter
+requests
+mysql-connector-python
