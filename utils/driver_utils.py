@@ -2,6 +2,8 @@ import os
 from typing import Optional
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class DriverUtils:
@@ -16,7 +18,7 @@ class DriverUtils:
         """
         options = Options()
 
-        # CI ortamı (GitHub Actions vb.), Linux işletim sistemi (EC2) veya HEADLESS=true kontrolü
+        # CI ortamı, Linux işletim sistemi (EC2) veya HEADLESS=true kontrolü
         is_ci_or_linux = (
             os.environ.get("CI") == "true"
             or os.environ.get("GITHUB_ACTIONS") == "true"
@@ -30,8 +32,14 @@ class DriverUtils:
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
             options.add_argument("--window-size=1920,1080")
+            # Linux headless modda stabiliteyi artıran ek bayraklar
+            options.add_argument("--remote-debugging-pipe")
+            options.add_argument("--disable-software-rasterizer")
+            options.add_argument("--disable-extensions")
 
-        cls._driver = webdriver.Chrome(options=options)
+        # ChromeDriverManager ile uyumlu ChromeDriver otomatik indirilir/yönetilir
+        service = Service(ChromeDriverManager().install())
+        cls._driver = webdriver.Chrome(service=service, options=options)
         cls._driver.implicitly_wait(60)
 
         # Yerel Windows ortamında pencereyi büyüt
@@ -39,15 +47,15 @@ class DriverUtils:
             cls._driver.maximize_window()
 
     @classmethod
-    def get_driver(cls) -> webdriver.Chrome:
+    def get_driver(cls) -> Optional[webdriver.Chrome]:
         """Mevcut WebDriver oturumunu döndürür."""
-        if cls._driver is None:
-            raise RuntimeError("Driver henüz başlatılmadı! Lütfen önce create_driver() metodunu çağırın.")
         return cls._driver
 
     @classmethod
     def quit_driver(cls) -> None:
         """WebDriver oturumunu kapatır ve nesneyi sıfırlar."""
         if cls._driver is not None:
-            cls._driver.quit()
-            cls._driver = None
+            try:
+                cls._driver.quit()
+            finally:
+                cls._driver = None
