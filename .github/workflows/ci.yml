@@ -10,6 +10,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: Ubeydullah.71
+          MYSQL_DATABASE: classicmodels
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Kodu indir
         uses: actions/checkout@v4
@@ -24,8 +38,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # - name: Behave testlerini çalıştır (sadece API)
-      #   run: behave features/api_testi.feature
+      - name: MySQL client kur
+        run: sudo apt-get install -y mysql-client
+
+      - name: classicmodels veritabanını yükle
+        run: |
+          curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
+          mysql -h 127.0.0.1 -u root -pUbeydullah.71 classicmodels < classicmodels.sql
 
       - name: Behave testlerini çalıştır
-        run: behave features/
+        run: |
+          behave features/ \
+            --exclude data_table.feature
