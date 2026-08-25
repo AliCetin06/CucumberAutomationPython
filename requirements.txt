@@ -5,3 +5,5 @@ behave-html-formatter
 requests
 mysql-connector-python
 locust==2.46.4
+allure-behave==2.16.0
+allure-python-commons==2.16.0

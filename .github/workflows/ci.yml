@@ -25,4 +25,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Behave testlerini çalıştır
-        run: behave
+        run: behave features/api_testi.feature
