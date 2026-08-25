@@ -4,3 +4,4 @@ openpyxl
 behave-html-formatter
 requests
 mysql-connector-python
+locust==2.46.4
