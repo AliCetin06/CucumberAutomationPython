@@ -1,7 +1,7 @@
 from utils.driver_utils import DriverUtils
 from utils.property_reader import PropertyReader
 
-#ava Cucumber Hooks sınıfının Python Behave karşılığı aşağıdadır.
+
 def before_scenario(context, scenario):
     """
     Java'daki @Before karşılığı:
@@ -10,8 +10,9 @@ def before_scenario(context, scenario):
     # Property / Config verilerini yükle
     PropertyReader.init_property()
 
-    # WebDriver oturumunu başlat
+    # WebDriver oturumunu başlat ve context'e bağla
     DriverUtils.create_driver()
+    context.driver = DriverUtils.get_driver()
 
 
 def before_tag(context, tag):
