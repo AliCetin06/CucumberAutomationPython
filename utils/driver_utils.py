@@ -1,7 +1,7 @@
+import os
+from typing import Optional
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from typing import Optional
-import os
 
 
 class DriverUtils:
@@ -10,23 +10,32 @@ class DriverUtils:
     @classmethod
     def create_driver(cls) -> None:
         """
-        Chrome WebDriver oturumunu Selenium 4 standartlarına göre otomatik başlatır.
-        CI ortamında (GitHub Actions) otomatik olarak headless modda çalışır.
+        Chrome WebDriver oturumunu Selenium 4 standartlarına göre başlatır.
+        CI/CD (GitHub Actions), AWS EC2 (Linux) veya HEADLESS=true durumlarında
+        otomatik olarak headless modda çalışır.
         """
         options = Options()
 
-        is_ci = os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true"
+        # CI ortamı (GitHub Actions vb.), Linux işletim sistemi (EC2) veya HEADLESS=true kontrolü
+        is_ci_or_linux = (
+            os.environ.get("CI") == "true"
+            or os.environ.get("GITHUB_ACTIONS") == "true"
+            or os.environ.get("HEADLESS", "false").lower() == "true"
+            or os.name != "nt"  # Windows dışındaki sistemler (Linux/Ubuntu EC2)
+        )
 
-        if is_ci:
+        if is_ci_or_linux:
             options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
             options.add_argument("--window-size=1920,1080")
 
         cls._driver = webdriver.Chrome(options=options)
         cls._driver.implicitly_wait(60)
 
-        if not is_ci:
+        # Yerel Windows ortamında pencereyi büyüt
+        if not is_ci_or_linux:
             cls._driver.maximize_window()
 
     @classmethod
@@ -38,7 +47,7 @@ class DriverUtils:
 
     @classmethod
     def quit_driver(cls) -> None:
-        """WebDriver oturumunu kapatır."""
+        """WebDriver oturumunu kapatır ve nesneyi sıfırlar."""
         if cls._driver is not None:
             cls._driver.quit()
             cls._driver = None
