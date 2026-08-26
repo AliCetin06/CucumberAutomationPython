@@ -55,7 +55,7 @@ jobs:
         run: |
           rm -rf reports/allure-results
           mkdir -p reports/allure-results
-          behave features/ -f allure_behave.formatter:AllureFormatter -o reports/allure-results --exclude "data_table.feature|mobile_settings.feature"
+          behave features/ --exclude "data_table.feature|mobile_settings.feature"
         continue-on-error: true
         id: behave_run
 
