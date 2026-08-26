@@ -49,16 +49,17 @@ jobs:
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
 
-      - name: Behave testlerini çalıştır (Allure + HTML)
+      - name: Behave testlerini çalıştır
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          rm -rf reports/allure-results
           mkdir -p reports/allure-results
-          behave features/ -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f html -o reports/cucumber_report.html --exclude "data_table.feature|mobile_settings.feature"
+          behave features/ -f allure_behave.formatter:AllureFormatter -o reports/allure-results --exclude "data_table.feature|mobile_settings.feature"
         continue-on-error: true
         id: behave_run
 
-      - name: Allure HTML Raporunu Derle (Single File / HTML)
+      - name: Allure HTML Raporunu Derle (Single File)
         if: always()
         run: |
           allure generate reports/allure-results --clean --single-file -o reports/allure-report
@@ -88,14 +89,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Allure ve Cucumber Raporlarını S3'e yükle
+      - name: Allure Raporunu S3'e yükle
         if: always()
         run: |
-          # Single-file Allure HTML raporunu yükle
           aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}.html --content-type "text/html"
-          
-          # Standart Cucumber HTML raporunu yükle
-          aws s3 cp reports/cucumber_report.html s3://${{ secrets.AWS_S3_BUCKET }}/cucumber_report_${{ github.run_number }}.html --content-type "text/html"
 
       - name: Testler başarısızsa job'ı fail yap
         if: steps.behave_run.outcome == 'failure'
