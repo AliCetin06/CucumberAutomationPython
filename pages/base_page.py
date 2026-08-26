@@ -34,3 +34,7 @@ class BasePage(ABC):
     def wait_for_element_to_be_visible(self, locator):
         # return eklendi (En kritik düzeltme)
         return self.commonmethods.wait_for_element_to_be_visible(locator)
+
+    def wait_for_element_to_be_invisible(self, locator):
+        # Loading/spinner gibi elementlerin kaybolmasını beklemek için
+        return self.commonmethods.wait_for_element_to_be_invisible(locator)

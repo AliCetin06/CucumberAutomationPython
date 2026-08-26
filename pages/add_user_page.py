@@ -14,7 +14,9 @@ class AddUserPage(BasePage):
         super().__init__(driver)
 
     def click_on_save_btn(self):
-        # BasePage içerisindeki explicit wait ve click metodunu kullanır
+        # Önce loading ekranının kaybolmasını bekle
+        self.wait_for_element_to_be_invisible((By.CLASS_NAME, "oxd-form-loader"))
+        # Sonra normal akış
         self.wait_for_element_to_be_clickable(self.SAVE_BTN)
         self.click(self.SAVE_BTN)
 
