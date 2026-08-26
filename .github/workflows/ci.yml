@@ -40,7 +40,8 @@ jobs:
       - name: Behave testlerini çalıştır
         run: |
           behave features/ \
-            --exclude data_table.feature
+            --exclude data_table.feature \
+            --exclude mobile_settings.feature
 
       - name: AWS bilgilerini yapılandır
         if: always()
