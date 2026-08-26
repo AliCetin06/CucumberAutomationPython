@@ -23,22 +23,48 @@ jobs:
     steps:
       - name: Kodu indir
         uses: actions/checkout@v4
+
       - name: Python kur
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Bağımlılıkları yükle
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: MySQL client kur
         run: sudo apt-get install -y mysql-client
+
       - name: classicmodels veritabanını yükle
         run: |
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
+
       - name: Behave testlerini çalıştır
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: behave features/ --exclude "data_table.feature|mobile_settings.feature"
+        continue-on-error: true
+        id: behave_run
+
+      - name: Allure sonuçlarını artifact olarak yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: reports/allure-results
+          retention-days: 14
+
+      - name: Ekran görüntülerini artifact olarak yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: reports/screenshots
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: AWS bilgilerini yapılandır
         if: always()
@@ -52,3 +78,7 @@ jobs:
         if: always()
         run: |
           aws s3 cp reports/cucumber_report.html s3://${{ secrets.AWS_S3_BUCKET }}/cucumber_report_${{ github.run_number }}.html
+
+      - name: Testler başarısızsa job'ı fail yap
+        if: steps.behave_run.outcome == 'failure'
+        run: exit 1
