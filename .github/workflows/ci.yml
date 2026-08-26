@@ -38,10 +38,7 @@ jobs:
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
       - name: Behave testlerini çalıştır
-        run: |
-          behave features/ \
-            --exclude data_table.feature \
-            --exclude mobile_settings.feature
+        run: behave features/ --exclude data_table.feature --exclude mobile_settings.feature
 
       - name: AWS bilgilerini yapılandır
         if: always()
