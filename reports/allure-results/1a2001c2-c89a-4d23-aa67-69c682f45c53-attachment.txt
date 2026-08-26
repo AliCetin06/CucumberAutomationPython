@@ -1,0 +1,3 @@
+[AI ANALİZ ATLANDI] GEMINI_API_KEY ortam değişkeni bulunamadı.
+Terminalde 'export GEMINI_API_KEY=...' ile ayarlayın ya da PyCharm Run Configuration'a ekleyin.
+Ücretsiz key: https://aistudio.google.com/apikey
