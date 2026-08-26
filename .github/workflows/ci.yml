@@ -4,6 +4,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -34,6 +35,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Allure CLI Kur
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jre
+          npm install -g allure-commandline --save-dev
+
       - name: MySQL client kur
         run: sudo apt-get install -y mysql-client
 
@@ -42,12 +49,19 @@ jobs:
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
 
-      - name: Behave testlerini çalıştır
+      - name: Behave testlerini çalıştır (Allure + HTML)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: behave features/ --exclude "data_table.feature|mobile_settings.feature"
+        run: |
+          mkdir -p reports/allure-results
+          behave features/ -f allure_behave.formatter:AllureFormatter -o reports/allure-results -f html -o reports/cucumber_report.html --exclude "data_table.feature|mobile_settings.feature"
         continue-on-error: true
         id: behave_run
+
+      - name: Allure HTML Raporunu Derle (Single File / HTML)
+        if: always()
+        run: |
+          allure generate reports/allure-results --clean --single-file -o reports/allure-report
 
       - name: Allure sonuçlarını artifact olarak yükle
         if: always()
@@ -74,10 +88,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Raporu S3'e yükle
+      - name: Allure ve Cucumber Raporlarını S3'e yükle
         if: always()
         run: |
-          aws s3 cp reports/cucumber_report.html s3://${{ secrets.AWS_S3_BUCKET }}/cucumber_report_${{ github.run_number }}.html
+          # Single-file Allure HTML raporunu yükle
+          aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}.html --content-type "text/html"
+          
+          # Standart Cucumber HTML raporunu yükle
+          aws s3 cp reports/cucumber_report.html s3://${{ secrets.AWS_S3_BUCKET }}/cucumber_report_${{ github.run_number }}.html --content-type "text/html"
 
       - name: Testler başarısızsa job'ı fail yap
         if: steps.behave_run.outcome == 'failure'
