@@ -1,5 +1,6 @@
 allure-behave==2.16.0
 allure-python-commons==2.16.0
+behave-html-formatter==0.9.10
 Appium-Python-Client==6.0.0
 attrs==26.1.0
 behave==1.2.6
