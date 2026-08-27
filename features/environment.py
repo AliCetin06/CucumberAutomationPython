@@ -1,10 +1,24 @@
 import os
+import shutil
 import traceback
 import allure
 
 from utils.driver_utils import DriverUtils
 from utils.property_reader import PropertyReader
 from utils.ai_analyzer import analyze_failure
+
+
+def before_all(context):
+    # Her 'behave' çalıştırmasının başında eski sonuçları temizliyoruz.
+    # CI'da runner zaten temiz geldiği için bu adım orada bir şey değiştirmez,
+    # ama yerelde eski JSON/attachment'ların birikip test sayısını
+    # şişirmesini (örn. 17 yerine 18 test case görünmesini) önler.
+    for stale_dir in ("reports/allure-results", "reports/screenshots"):
+        try:
+            shutil.rmtree(stale_dir, ignore_errors=True)
+            os.makedirs(stale_dir, exist_ok=True)
+        except Exception as cleanup_err:
+            print(f"[TEMİZLİK HATASI] '{stale_dir}' temizlenemedi: {cleanup_err}")
 
 
 def before_scenario(context, scenario):

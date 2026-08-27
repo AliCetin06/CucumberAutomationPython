@@ -1,2 +1,0 @@
-[AI ANALİZ ATLANDI] ANTHROPIC_API_KEY ortam değişkeni bulunamadı.
-Terminalde 'export ANTHROPIC_API_KEY=...' ile ayarlayın ya da PyCharm Run Configuration'a ekleyin.
