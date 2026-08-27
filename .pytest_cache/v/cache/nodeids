@@ -1,0 +1,5 @@
+[
+  "test_api.py::test_create_new_item",
+  "test_api.py::test_get_item_details",
+  "test_mobile_first.py::test_settings_app_launch"
+]
