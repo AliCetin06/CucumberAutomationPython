@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, edge]
     services:
       mysql:
         image: mysql:8.0
@@ -49,9 +53,10 @@ jobs:
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
 
-      - name: Behave testlerini çalıştır
+      - name: Behave testlerini çalıştır (${{ matrix.browser }})
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BROWSER: ${{ matrix.browser }}
         run: |
           rm -rf reports/allure-results
           mkdir -p reports/allure-results
@@ -68,7 +73,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
+          name: allure-results-${{ matrix.browser }}
           path: reports/allure-results
           retention-days: 14
 
@@ -76,7 +81,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.browser }}
           path: reports/screenshots
           retention-days: 14
           if-no-files-found: ignore
@@ -92,7 +97,7 @@ jobs:
       - name: Allure Raporunu S3'e yükle
         if: always()
         run: |
-          aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}.html --content-type "text/html"
+          aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}_${{ matrix.browser }}.html --content-type "text/html"
 
       - name: Testler başarısızsa job'ı fail yap
         if: steps.behave_run.outcome == 'failure'
