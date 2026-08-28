@@ -21,8 +21,7 @@ def verify_all_options_showing_in_job_menu(context):
 
 @then('verify Job sub menu items has following data')
 def verify_job_sub_menu_items_has_following_data(context):
-    # Java'daki dataTable.asList() karşılığı:
-    # Başlıksız tek sütunlu tablolar için her satırın ilk elemanını listeye alır
-    list_of_items = [row[0] for row in context.table]
+    # 'Job Menu Items' başlığının altındaki verileri listeler
+    list_of_items = [row['Job Menu Items'] for row in context.table]
 
     context.admin_page.verify_job_sub_menu_items(list_of_items)

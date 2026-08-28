@@ -10,15 +10,14 @@ class CommonMethods:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def wait_for_element_to_be_clickable(self, locator_or_element: Union[Tuple[str, str], WebElement],
+    def wait_for_element_to_be_invisible(self, locator_or_element: Union[Tuple[str, str], WebElement],
                                          timeout: int = 60):
         """
-        Elementin tıklanabilir olmasını bekler.
-        Hem Tuple (locator) hem de WebElement kabul eder.
+        Elementin görünmez hale gelmesini (kaybolmasını) bekler.
+        Genelde loading/spinner elementleri için kullanılır.
         """
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(EC.element_to_be_clickable(locator_or_element))
-
+        return wait.until(EC.invisibility_of_element_located(locator_or_element))
     def wait_for_element_to_be_visible(self, locator_or_element: Union[Tuple[str, str], WebElement], timeout: int = 60):
         """
         Elementin görünür olmasını bekler.
@@ -33,6 +32,15 @@ class CommonMethods:
 
         # Eğer doğrudan WebElement gönderildiyse:
         return wait.until(EC.visibility_of(locator_or_element))
+
+    def wait_for_element_to_be_clickable(self, locator_or_element: Union[Tuple[str, str], WebElement],
+                                         timeout: int = 60):
+        """
+        Elementin tıklanabilir olmasını bekler.
+        Hem Tuple (locator) hem de WebElement kabul eder.
+        """
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.element_to_be_clickable(locator_or_element))
 
     def switch_to_new_window(self, current_window: str):
         """Mevcut pencereden farklı olan ilk yeni sekmeye/pencereye geçiş yapar."""

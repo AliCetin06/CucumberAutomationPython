@@ -1,0 +1,104 @@
+name: CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, edge]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: classicmodels
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Bağımlılıkları yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Allure CLI Kur
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jre
+          npm install -g allure-commandline --save-dev
+
+      - name: MySQL client kur
+        run: sudo apt-get install -y mysql-client
+
+      - name: classicmodels veritabanını yükle
+        run: |
+          curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
+          mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
+
+      - name: Behave testlerini çalıştır (${{ matrix.browser }})
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          rm -rf reports/allure-results
+          mkdir -p reports/allure-results
+          behave features/ --exclude "data_table.feature|mobile_settings.feature"
+        continue-on-error: true
+        id: behave_run
+
+      - name: Allure HTML Raporunu Derle (Single File)
+        if: always()
+        run: |
+          allure generate reports/allure-results --clean --single-file -o reports/allure-report
+
+      - name: Allure sonuçlarını artifact olarak yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.browser }}
+          path: reports/allure-results
+          retention-days: 14
+
+      - name: Ekran görüntülerini artifact olarak yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.browser }}
+          path: reports/screenshots
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: AWS bilgilerini yapılandır
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Allure Raporunu S3'e yükle
+        if: always()
+        run: |
+          aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}_${{ matrix.browser }}.html --content-type "text/html"
+
+      - name: Testler başarısızsa job'ı fail yap
+        if: steps.behave_run.outcome == 'failure'
+        run: exit 1

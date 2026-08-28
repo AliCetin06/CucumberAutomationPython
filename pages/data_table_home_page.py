@@ -1,15 +1,18 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 
 
 class DataTableHomePage(BasePage):
-    VERIFY_DATA = (By.XPATH, "//table[@id='myTable']")
-    TABLE_ROWS = (By.XPATH, "//table[@id='myTable']/tbody/tr")
+    TABLE = (By.CSS_SELECTOR, "table#example, table.dataTable")
+    TABLE_ROWS = (By.CSS_SELECTOR, "table#example tbody tr, table.dataTable tbody tr")
 
     def __init__(self, driver):
         super().__init__(driver)
 
     def verify_title_of_page(self):
+        """BasePage içindeki abstract metodu implement ediyoruz."""
         actual_title = self.driver.title
         assert "DataTables" in actual_title, f"Title mismatch! Actual: '{actual_title}'"
 
@@ -17,34 +20,38 @@ class DataTableHomePage(BasePage):
         self.driver.get("https://datatables.net/")
 
     def verify_of_data_home_page(self):
-        element = self.wait_for_element_to_be_visible(self.VERIFY_DATA)
+        element = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(self.TABLE)
+        )
         assert element is not None and element.is_displayed(), "Data table is not displayed"
 
     def verify_data_table_data(self, list_of_items):
-        """Header'sız tablo doğrulaması (Dinamik XPath ile garanti çözüm)."""
-        self.wait_for_element_to_be_visible(self.VERIFY_DATA)
+        """Tüm satırları sırasıyla hücre hücre doğrular."""
+        WebDriverWait(self.driver, 15).until(
+            EC.presence_of_element_located(self.TABLE_ROWS)
+        )
+
+        # DataTables JS'in ilk hücreyi doldurmasını bekle (race condition fix).
+        # TABLE_ROWS ile aynı (fallback'li) locator'ı kullanıyoruz ki
+        # id/class farkından kaynaklanan "element bulunamadı" riskini ortadan kaldıralım.
+        def first_cell_filled(driver):
+            rows = driver.find_elements(*self.TABLE_ROWS)
+            if not rows:
+                return False
+            first_cells = rows[0].find_elements(By.TAG_NAME, "td")
+            return bool(first_cells) and first_cells[0].text.strip() != ""
+
+        WebDriverWait(self.driver, 20).until(first_cell_filled)
+
+        rows = self.driver.find_elements(*self.TABLE_ROWS)
+        assert len(rows) >= len(list_of_items), (
+            f"Expected at least {len(list_of_items)} rows, but found {len(rows)}"
+        )
 
         for i, expected_row in enumerate(list_of_items):
+            cells = rows[i].find_elements(By.TAG_NAME, "td")
             for j, expected_value in enumerate(expected_row):
-                # Doğrudan ilgili satır (i+1) ve sütun (j+1) hücresini XPath ile hedefliyoruz
-                cell_xpath = (By.XPATH, f"//table[@id='myTable']/tbody/tr[{i + 1}]/td[{j + 1}]")
-
-                # Hücrenin yüklenmesini bekleyip metnini çekiyoruz
-                cell_element = self.wait_for_element_to_be_visible(cell_xpath)
-                actual_value = cell_element.get_attribute("innerText").strip()
-
+                actual_value = cells[j].text.strip() or cells[j].get_attribute("innerText").strip()
                 assert actual_value == expected_value, (
                     f"Row {i + 1} Col {j + 1} mismatch! Expected: '{expected_value}', Actual: '{actual_value}'"
                 )
-
-    def verify_data_table_data_with_header(self, list_of_map):
-        """Header'lı (Map) tablo doğrulaması."""
-        self.wait_for_element_to_be_visible(self.VERIFY_DATA)
-        rows = self.driver.find_elements(*self.TABLE_ROWS)
-
-        for i, expected_map in enumerate(list_of_map):
-            cells = rows[i].find_elements(By.TAG_NAME, "td")
-            actual_name = cells[0].get_attribute("innerText").strip()
-            expected_name = expected_map.get("Name")
-
-            assert actual_name == expected_name, f"Row {i + 1} Name mismatch! Expected: '{expected_name}', Actual: '{expected_name}'"

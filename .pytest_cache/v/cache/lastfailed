@@ -1,0 +1,5 @@
+{
+  "test_api.py::test_create_new_item": true,
+  "test_api.py::test_get_item_details": true,
+  "test_mobile_first.py": true
+}

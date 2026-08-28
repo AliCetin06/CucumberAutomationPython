@@ -21,6 +21,7 @@ Feature: Menu item validation job options
     Then verify user on Adminpage
     When user click to job option
     Then verify Job sub menu items has following data
+      | Job Menu Items    |
       | Job Titles        |
       | Pay Grades        |
       | Employment Status |
