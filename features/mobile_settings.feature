@@ -1,3 +1,5 @@
+
+@mobile
 Feature: Mobile Settings Application Test
 
   Scenario: User opens settings app and verifies search box
