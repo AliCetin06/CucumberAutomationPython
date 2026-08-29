@@ -48,11 +48,16 @@ jobs:
       - name: Behave testlerini container içinde çalıştır (${{ matrix.browser }})
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
           rm -rf reports/allure-results
           mkdir -p reports/allure-results
           docker run --network host \
             -e BROWSER=${{ matrix.browser }} \
+            -e DB_HOST=127.0.0.1 \
+            -e DB_USER=root \
+            -e DB_PASSWORD="$DB_PASSWORD" \
+            -e DB_NAME=classicmodels \
             -e GEMINI_API_KEY="$GEMINI_API_KEY" \
             -v ${{ github.workspace }}/reports:/app/reports \
             cucumber-automation \

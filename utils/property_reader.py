@@ -34,7 +34,18 @@ class PropertyReader:
     @classmethod
     def get_property(cls, key: str) -> str:
         """
-        Verilen key'e karşılık gelen değeri döndürür.
-        Key bulunamazsa None döner.
+        Değeri şu öncelik sırasına göre döndürür:
+          1. Ortam değişkeni (key.upper() ve '.' -> '_' dönüşümüyle)
+             Örnek: "db.password" -> "DB_PASSWORD", "browser" -> "BROWSER"
+          2. config.properties dosyasındaki değer
+          3. Bulunamazsa None
+        Bu sayede CI ortamında (GitHub Actions/Docker) secrets/env var ile
+        değerleri override edebiliyoruz; local'de dosyadaki değerler
+        değişmeden çalışmaya devam ediyor.
         """
+        env_key = key.upper().replace(".", "_")
+        env_value = os.environ.get(env_key)
+        if env_value is not None: 
+            return env_value
+
         return cls._prop.get("DEFAULT", key, fallback=None)
