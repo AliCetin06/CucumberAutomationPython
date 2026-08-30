@@ -6,7 +6,7 @@ from utils.driver_utils import DriverUtils
 
 @then('verify user is on forget password page')
 def verify_user_is_on_forget_password_page(context):
-    # Sayfa nesneleri initialize ediliyor ve context'e atanıyor
+    # Sayfa nesneleri initialize ediliyor ve context'e ataniyor
     driver = DriverUtils.get_driver()
     context.login_page = LoginPage(driver)
     context.forget_password_page = ForgetPasswordPage(driver)

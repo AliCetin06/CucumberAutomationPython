@@ -1,5 +1,5 @@
 import pymysql
-# Sizin yazdığınız PropertyReader sınıfını içeri alıyoruz
+# Sizin yazdiğiniz PropertyReader sinifini içeri aliyoruz
 from utils.property_reader import PropertyReader
 
 class DatabaseUtils:
@@ -8,9 +8,9 @@ class DatabaseUtils:
 
     @classmethod
     def connect_data_base(cls):
-        """Sizin PropertyReader sınıfınızla verileri okuyarak veri tabanına bağlanır."""
+        """Sizin PropertyReader sinifinizla verileri okuyarak veri tabanina bağlanir."""
         try:
-            # 1. KRİTİK ADIM: Önce config.properties dosyasını hafızaya yüklüyoruz
+            # 1. KRİTİK ADIM: Önce config.properties dosyasini hafizaya yüklüyoruz
             PropertyReader.init_property()
 
             # 2. Sizin get_property metodunuzla verileri çekiyoruz
@@ -19,7 +19,7 @@ class DatabaseUtils:
             db_password = PropertyReader.get_property("db.password")
             db_name = PropertyReader.get_property("db.name")
 
-            # 3. Bağlantıyı kuruyoruz
+            # 3. Bağlantiyi kuruyoruz
             cls.connection = pymysql.connect(
                 host=db_host,
                 user=db_user,
@@ -32,7 +32,7 @@ class DatabaseUtils:
         except Exception as e:
             print(f"Connection failed: {e}")
 
-    # get_result_set ve close_data_base_connection metotları daha önce yazdığımız gibi kalacak...
+    # get_result_set ve close_data_base_connection metotlari daha önce yazdiğimiz gibi kalacak...
     @classmethod
     def get_result_set(cls, query: str):
         try:

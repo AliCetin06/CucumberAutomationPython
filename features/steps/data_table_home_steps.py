@@ -17,7 +17,7 @@ def step_verify_homepage(context):
 
 @then('verify Table datas has following data')
 def step_verify_table_data(context):
-    # context.table artık header satırını (name, position, office, age, start_date)
-    # otomatik olarak ayırıyor; context.table.rows sadece veri satırlarını içerir.
+    # context.table artik header satirini (name, position, office, age, start_date)
+    # otomatik olarak ayiriyor; context.table.rows sadece veri satirlarini içerir.
     list_of_items = [list(row) for row in context.table]
     context.datatable_page.verify_data_table_data(list_of_items)

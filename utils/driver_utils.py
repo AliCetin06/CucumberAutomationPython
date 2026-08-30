@@ -21,13 +21,13 @@ class DriverUtils:
 
     @classmethod
     def _is_ci_or_linux(cls) -> bool:
-        # Sadece GERÇEK CI/headless sinyallerine bakıyoruz.
-        # 'os.name != "nt"' kontrolünü kasıtlı olarak KALDIRDIK, çünkü bu
-        # macOS'u da (os.name == 'posix', Linux ile aynı) yanlışlıkla
-        # "CI/sunucu" sanıp yerel Mac'te bile tarayıcıyı görünmez (headless)
-        # açıyordu. Artık yerelde (Mac/Windows/Linux fark etmeksizin)
-        # tarayıcı her zaman görünür açılır; sadece CI ortamında ya da
-        # HEADLESS=true elle ayarlandığında headless moda geçilir.
+        # Sadece GERÇEK CI/headless sinyallerine bakiyoruz.
+        # 'os.name != "nt"' kontrolünü kasitli olarak KALDIRDIK, çünkü bu
+        # macOS'u da (os.name == 'posix', Linux ile ayni) yanlişlikla
+        # "CI/sunucu" sanip yerel Mac'te bile tarayiciyi görünmez (headless)
+        # açiyordu. Artik yerelde (Mac/Windows/Linux fark etmeksizin)
+        # tarayici her zaman görünür açilir; sadece CI ortaminda ya da
+        # HEADLESS=true elle ayarlandiğinda headless moda geçilir.
         return (
             os.environ.get("CI") == "true"
             or os.environ.get("GITHUB_ACTIONS") == "true"
@@ -37,11 +37,11 @@ class DriverUtils:
     @classmethod
     def _resolve_browser(cls) -> str:
         """
-        Hangi tarayıcının başlatılacağını belirler.
-        Öncelik sırası:
+        Hangi tarayicinin başlatilacağini belirler.
+        Öncelik sirasi:
           1) BROWSER ortam değişkeni (CI'da matrix strategy bunu set eder)
           2) config.properties içindeki 'browser' key'i
-          3) varsayılan: chrome
+          3) varsayilan: chrome
         """
         browser = os.environ.get("BROWSER")
         if not browser:
@@ -93,9 +93,9 @@ class DriverUtils:
     @classmethod
     def create_driver(cls) -> None:
         """
-        Seçilen tarayıcıya göre WebDriver oturumunu Selenium 4 standartlarına
-        göre başlatır. CI/CD (GitHub Actions), AWS EC2 (Linux) veya
-        HEADLESS=true durumlarında otomatik olarak headless modda çalışır.
+        Seçilen tarayiciya göre WebDriver oturumunu Selenium 4 standartlarina
+        göre başlatir. CI/CD (GitHub Actions), AWS EC2 (Linux) veya
+        HEADLESS=true durumlarinda otomatik olarak headless modda çalişir.
         """
         browser = cls._resolve_browser()
         headless = cls._is_ci_or_linux()
@@ -109,7 +109,7 @@ class DriverUtils:
         builder = builders.get(browser)
         if builder is None:
             raise ValueError(
-                f"Desteklenmeyen tarayıcı: '{browser}'. "
+                f"Desteklenmeyen tarayici: '{browser}'. "
                 f"Geçerli seçenekler: {', '.join(builders.keys())}"
             )
 
@@ -126,7 +126,7 @@ class DriverUtils:
 
     @classmethod
     def quit_driver(cls) -> None:
-        """WebDriver oturumunu kapatır ve nesneyi sıfırlar."""
+        """WebDriver oturumunu kapatir ve nesneyi sifirlar."""
         if cls._driver is not None:
             try:
                 cls._driver.quit()

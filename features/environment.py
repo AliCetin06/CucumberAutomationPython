@@ -9,9 +9,9 @@ from utils.ai_analyzer import analyze_failure
 
 
 def before_all(context):
-    # Her 'behave' çalıştırmasının başında eski sonuçları temizliyoruz.
-    # CI'da runner zaten temiz geldiği için bu adım orada bir şey değiştirmez,
-    # ama yerelde eski JSON/attachment'ların birikip test sayısını
+    # Her 'behave' çaliştirmasinin başinda eski sonuçlari temizliyoruz.
+    # CI'da runner zaten temiz geldiği için bu adim orada bir şey değiştirmez,
+    # ama yerelde eski JSON/attachment'larin birikip test sayisini
     # şişirmesini (örn. 17 yerine 18 test case görünmesini) önler.
     for stale_dir in ("reports/allure-results", "reports/screenshots"):
         try:
@@ -37,10 +37,10 @@ def before_scenario(context, scenario):
         context.driver = DriverUtils.get_driver()
 
     except Exception as setup_err:
-        # Hook içinde patlama Allure'ın senaryo açma/kapama eşleşmesini bozuyor.
+        # Hook içinde patlama Allure'in senaryo açma/kapama eşleşmesini bozuyor.
         # Bu yüzden burada asla raise etmiyoruz; senaryoyu güvenli şekilde
         # "driver yok" durumuna düşürüp devam ediyoruz. Step'ler zaten
-        # driver'a ihtiyaç duyduğunda kendi hatasını verecek.
+        # driver'a ihtiyaç duyduğunda kendi hatasini verecek.
         print(f"[BEFORE_SCENARIO HATASI]: {setup_err}")
         traceback.print_exc()
         context.driver = None
@@ -51,7 +51,7 @@ def after_scenario(context, scenario):
 
     try:
         if scenario.status == "failed":
-            print(f"\n[AI OTOMASYON BILGISI] '{scenario.name}' senaryosu patladı. AI analizi başlatılıyor...")
+            print(f"\n[AI OTOMASYON BILGISI] '{scenario.name}' senaryosu patladi. AI analizi başlatiliyor...")
 
             failed_step = next((step for step in scenario.steps if step.status == "failed"), None)
             error_msg = "Bilinmeyen Hata"
@@ -102,12 +102,12 @@ def after_scenario(context, scenario):
                 print(f"[ALLURE ATTACH HATASI]: {attach_err}")
 
     except Exception as after_err:
-        # after_scenario içindeki hiçbir hata dışarı sızmamalı.
+        # after_scenario içindeki hiçbir hata dişari sizmamali.
         print(f"[AFTER_SCENARIO GENEL HATASI]: {after_err}")
         traceback.print_exc()
 
     finally:
-        # Driver her durumda kapatılmalı - try/finally ile garanti altına alıyoruz.
+        # Driver her durumda kapatilmali - try/finally ile garanti altina aliyoruz.
         if driver:
             try:
                 DriverUtils.quit_driver()

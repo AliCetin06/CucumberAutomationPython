@@ -13,7 +13,7 @@ def user_fillout_the_pages(context):
 
 @step('user click to search button in Candidates page')
 def user_click_to_save_button_in_candidates_page(context):
-    # Behave'de @step dekoratörü hem 'When' hem 'And' adımları ile eşleşir
+    # Behave'de @step dekoratörü hem 'When' hem 'And' adimlari ile eşleşir
     context.candidates_page.clicking_search_btn()
 
 @then('verify showing no record found')

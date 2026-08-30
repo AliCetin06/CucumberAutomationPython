@@ -6,7 +6,7 @@ from utils.driver_utils import DriverUtils
 
 @then('verify user is on addUserPage')
 def verify_user_is_on_user_details_page(context):
-    # DriverUtils.get_driver() üzerinden driver alınıp sayfa başlatılır
+    # DriverUtils.get_driver() üzerinden driver alinip sayfa başlatilir
     context.add_user_page = AddUserPage(DriverUtils.get_driver())
     context.add_user_page.verify_title_of_page()
 

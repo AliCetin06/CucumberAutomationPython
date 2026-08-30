@@ -28,7 +28,7 @@ jobs:
       - name: Kodu indir
         uses: actions/checkout@v4
 
-      - name: Docker image'ı build et
+      - name: Docker image'i build et
         run: docker build -t cucumber-automation .
 
       - name: Allure CLI Kur
@@ -40,12 +40,12 @@ jobs:
       - name: MySQL client kur
         run: sudo apt-get install -y mysql-client
 
-      - name: classicmodels veritabanını yükle
+      - name: classicmodels veritabanini yükle
         run: |
           curl -s https://raw.githubusercontent.com/hhorak/mysql-sample-db/master/mysqlsampledatabase.sql -o classicmodels.sql
           mysql -h 127.0.0.1 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} classicmodels < classicmodels.sql
 
-      - name: Behave testlerini container içinde çalıştır (${{ matrix.browser }})
+      - name: Behave testlerini container içinde çaliştir (${{ matrix.browser }})
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DB_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -70,7 +70,7 @@ jobs:
         run: |
           allure generate reports/allure-results --clean --single-file -o reports/allure-report
 
-      - name: Allure sonuçlarını artifact olarak yükle
+      - name: Allure sonuçlarini artifact olarak yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -87,7 +87,7 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      - name: AWS bilgilerini yapılandır
+      - name: AWS bilgilerini yapilandir
         if: always()
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -100,6 +100,6 @@ jobs:
         run: |
           aws s3 cp reports/allure-report/index.html s3://${{ secrets.AWS_S3_BUCKET }}/allure_report_${{ github.run_number }}_${{ matrix.browser }}.html --content-type "text/html"
 
-      - name: Testler başarısızsa job'ı fail yap
+      - name: Testler başarisizsa job'i fail yap
         if: steps.behave_run.outcome == 'failure'
         run: exit 1

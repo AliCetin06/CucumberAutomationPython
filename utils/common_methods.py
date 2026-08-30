@@ -13,16 +13,16 @@ class CommonMethods:
     def wait_for_element_to_be_invisible(self, locator_or_element: Union[Tuple[str, str], WebElement],
                                          timeout: int = 60):
         """
-        Elementin görünmez hale gelmesini (kaybolmasını) bekler.
-        Genelde loading/spinner elementleri için kullanılır.
+        Elementin görünmez hale gelmesini (kaybolmasini) bekler.
+        Genelde loading/spinner elementleri için kullanilir.
         """
         wait = WebDriverWait(self.driver, timeout)
         return wait.until(EC.invisibility_of_element_located(locator_or_element))
     def wait_for_element_to_be_visible(self, locator_or_element: Union[Tuple[str, str], WebElement], timeout: int = 60):
         """
-        Elementin görünür olmasını bekler.
-        Eğer locator (tuple) verilirse visibility_of_element_located kullanır,
-        böylece 'tuple object has no attribute is_displayed' hatası alınmaz.
+        Elementin görünür olmasini bekler.
+        Eğer locator (tuple) verilirse visibility_of_element_located kullanir,
+        böylece 'tuple object has no attribute is_displayed' hatasi alinmaz.
         """
         wait = WebDriverWait(self.driver, timeout)
 
@@ -36,14 +36,14 @@ class CommonMethods:
     def wait_for_element_to_be_clickable(self, locator_or_element: Union[Tuple[str, str], WebElement],
                                          timeout: int = 60):
         """
-        Elementin tıklanabilir olmasını bekler.
+        Elementin tiklanabilir olmasini bekler.
         Hem Tuple (locator) hem de WebElement kabul eder.
         """
         wait = WebDriverWait(self.driver, timeout)
         return wait.until(EC.element_to_be_clickable(locator_or_element))
 
     def switch_to_new_window(self, current_window: str):
-        """Mevcut pencereden farklı olan ilk yeni sekmeye/pencereye geçiş yapar."""
+        """Mevcut pencereden farkli olan ilk yeni sekmeye/pencereye geçiş yapar."""
         window_list = self.driver.window_handles
 
         for window in window_list:
