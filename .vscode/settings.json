@@ -1,4 +1,9 @@
 {
-"cucumber.features": ["features/**/*.feature"],
-"cucumber.glue": ["features/steps/*.py"]
+  "cucumberautocomplete.steps": [
+    "features/steps/*.py"
+  ],
+  "cucumberautocomplete.syncfeatures": "features/**/*.feature",
+  "cucumberautocomplete.strictGherkinValidation": false,
+  "cucumberautocomplete.strictGherkinCompletion": false,
+  "workbench.editor.enablePreview": false
 }
