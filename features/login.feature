@@ -43,7 +43,7 @@ Feature: We are testing the login functionality in this feature
   @regression @ali
   Scenario: verify Error Message With  InValid username Valid password
     When user login with username "sdvsdf" and password "admin123"
-  Then verify invalid login error message is displayed
+    Then verify invalid login error message is displayed
 
   @smoke @wip
   Scenario: verify Error Message For Forget Password Incorrect User
