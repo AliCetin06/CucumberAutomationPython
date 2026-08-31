@@ -1,1 +1,7 @@
-features/add_user_functionality.feature  _
+features/add_user_functionality.feature  .
+features/api_testi.feature  ..
+features/data_table.feature  F
+features/db_testi.feature  S
+features/login.feature  .........
+features/menu_item_validation.feature  ..
+features/mobile_settings.feature  S

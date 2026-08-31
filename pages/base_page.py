@@ -19,13 +19,18 @@ class BasePage(ABC):
 
     # Locator ile element bulmayı kolaylaştıran yardımcı metotlar
     def find(self, locator):
-        return self.driver.find_element(*locator)
+        # Artık anlık find_element yerine, elementin görünür (visible) olmasını bekliyor.
+        # Chrome'da DOM'un geç render olduğu durumlarda NoSuchElementException'ı önler.
+        return self.wait_for_element_to_be_visible(locator)
 
     def find_elements(self, locator):
         return self.driver.find_elements(*locator)
 
     def click(self, locator):
-        self.find(locator).click()
+        # find() + click() yerine, elementin tıklanabilir (clickable) olmasını bekleyip tıklıyor.
+        # Bu, hem "element bulunamadı" hem de "element var ama henüz tıklanamaz" durumlarını kapsar.
+        element = self.wait_for_element_to_be_clickable(locator)
+        element.click()
 
     def wait_for_element_to_be_clickable(self, locator):
         # return eklendi
