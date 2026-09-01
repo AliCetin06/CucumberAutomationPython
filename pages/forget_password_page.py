@@ -4,7 +4,7 @@ from pages.base_page import BasePage
 
 class ForgetPasswordPage(BasePage):
 
-    # Locator'lar (Java @FindBy karşılığı Tuple tanımlamaları)
+    # Locator'lar (Java @FindBy karşiliği Tuple tanimlamalari)
     USER_NAME = (By.XPATH, "//input[@name='username']")
     RESET_BUTTON = (By.XPATH, "//button[@type='submit']")
     VALIDATION = (By.XPATH, "//div[@class='orangehrm-card-container']")

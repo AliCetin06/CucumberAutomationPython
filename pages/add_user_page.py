@@ -5,7 +5,7 @@ from pages.base_page import BasePage
 
 class AddUserPage(BasePage):
 
-    # Locator'lar (Java @FindBy karşılığı Tuple yapısı)
+    # Locator'lar (Java @FindBy karşiliği Tuple yapisi)
     CHANGE_NAME_INPUT = (By.XPATH, "//input[@placeholder='Type for hints...']")
     SAVE_BTN = (By.XPATH, "//button[@type='submit']")
     TITLE_OF_PAGE = (By.XPATH, "//div[@class='oxd-topbar-header']")
@@ -14,9 +14,9 @@ class AddUserPage(BasePage):
         super().__init__(driver)
 
     def click_on_save_btn(self):
-        # Önce loading ekranının kaybolmasını bekle
+        # Önce loading ekraninin kaybolmasini bekle
         self.wait_for_element_to_be_invisible((By.CLASS_NAME, "oxd-form-loader"))
-        # Sonra normal akış
+        # Sonra normal akiş
         self.wait_for_element_to_be_clickable(self.SAVE_BTN)
         self.click(self.SAVE_BTN)
 
@@ -29,5 +29,5 @@ class AddUserPage(BasePage):
     def verify_title_of_page(self):
         self.wait_for_element_to_be_visible(self.TITLE_OF_PAGE)
         element = self.find(self.TITLE_OF_PAGE)
-        # Java Assert.assertTrue karşılığı
+        # Java Assert.assertTrue karşiliği
         assert element.is_displayed(), "Page's title is not displayed"

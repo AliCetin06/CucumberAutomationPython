@@ -3,7 +3,7 @@ from pages.base_page import BasePage
 
 
 class AdminPage(BasePage):
-    # Locator'lar (Java @FindBy karşılığı Tuple yapıları)
+    # Locator'lar (Java @FindBy karşiliği Tuple yapilari)
     TITLE_OF_PAGE = (By.XPATH, "//span[@class='oxd-topbar-header-breadcrumb']")
     JOB_OPTION = (By.XPATH, "(//span[@class='oxd-topbar-body-nav-tab-item'])[2]")
     LIST_OF_JOB = (By.XPATH, "//ul[@class='oxd-dropdown-menu']/li")
@@ -25,7 +25,7 @@ class AdminPage(BasePage):
         for item in job_elements:
             print(item.text)
 
-    # Behave / Cucumber DataTable doğrulaması için metot
+    # Behave / Cucumber DataTable doğrulamasi için metot
     def verify_job_sub_menu_items(self, expected_items):
         actual_elements = self.find_elements(self.LIST_OF_JOB)
 

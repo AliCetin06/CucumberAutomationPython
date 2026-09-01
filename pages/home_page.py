@@ -4,7 +4,7 @@ from pages.base_page import BasePage
 
 class HomePage(BasePage):
 
-    # Locator'lar (Java @FindBy ve By karşılıkları)
+    # Locator'lar (Java @FindBy ve By karşiliklari)
     ADMIN_BTN = (By.XPATH, "//span[text()='Admin']")
     RECRUITMENT_BTN = (By.XPATH, "//span[text()='Recruitment']")
     BRAND_LOGO = (By.CSS_SELECTOR, ".oxd-brand-banner img")

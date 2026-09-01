@@ -26,14 +26,14 @@ class DataTableHomePage(BasePage):
         assert element is not None and element.is_displayed(), "Data table is not displayed"
 
     def verify_data_table_data(self, list_of_items):
-        """Tüm satırları sırasıyla hücre hücre doğrular."""
+        """Tüm satirlari sirasiyla hücre hücre doğrular."""
         WebDriverWait(self.driver, 15).until(
             EC.presence_of_element_located(self.TABLE_ROWS)
         )
 
-        # DataTables JS'in ilk hücreyi doldurmasını bekle (race condition fix).
-        # TABLE_ROWS ile aynı (fallback'li) locator'ı kullanıyoruz ki
-        # id/class farkından kaynaklanan "element bulunamadı" riskini ortadan kaldıralım.
+        # DataTables JS'in ilk hücreyi doldurmasini bekle (race condition fix).
+        # TABLE_ROWS ile ayni (fallback'li) locator'i kullaniyoruz ki
+        # id/class farkindan kaynaklanan "element bulunamadi" riskini ortadan kaldiralim.
         def first_cell_filled(driver):
             rows = driver.find_elements(*self.TABLE_ROWS)
             if not rows:

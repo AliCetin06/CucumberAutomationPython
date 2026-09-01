@@ -4,7 +4,7 @@ from utils.property_reader import PropertyReader
 
 
 class LoginPage(BasePage):
-    # Locator'lar (XPath sonlarındaki gereksiz boşluklar temizlendi)
+    # Locator'lar (XPath sonlarindaki gereksiz boşluklar temizlendi)
     FORGOT_PASSWORD = (By.XPATH, "//p[contains(., 'Forgot your password?')]")
     USER_NAME_INPUT = (By.NAME, "username")
     USER_PASSWORD = (By.NAME, "password")
@@ -27,13 +27,13 @@ class LoginPage(BasePage):
         if password == "login.password":
             password = PropertyReader.get_property("login.password")
 
-        # Elemanların görünür olmasını bekle
+        # Elemanlarin görünür olmasini bekle
         user_input_el = self.wait_for_element_to_be_visible(self.USER_NAME_INPUT)
         pass_input_el = self.wait_for_element_to_be_visible(self.USER_PASSWORD)
 
-        # None Kontrolü (NoneType hatasını önler)
-        assert user_input_el is not None, "Username input elemanı bulunamadı/görünür değil!"
-        assert pass_input_el is not None, "Password input elemanı bulunamadı/görünür değil!"
+        # None Kontrolü (NoneType hatasini önler)
+        assert user_input_el is not None, "Username input elemani bulunamadi/görünür değil!"
+        assert pass_input_el is not None, "Password input elemani bulunamadi/görünür değil!"
 
         user_input_el.clear()
         user_input_el.send_keys(username if username else "")
@@ -48,25 +48,25 @@ class LoginPage(BasePage):
 
     def validate_login_error_msg_invalid(self):
         err_el = self.wait_for_element_to_be_visible(self.ERROR_MESSAGE)
-        assert err_el is not None and err_el.is_displayed(), "Invalid credentials hata mesajı görüntülenemedi"
+        assert err_el is not None and err_el.is_displayed(), "Invalid credentials hata mesaji görüntülenemedi"
 
     def validate_login_error_msg_blank(self):
         elements = self.find_elements(self.REQUIRED_ELEMENTS)
-        assert len(elements) >= 1, "'Required' alan uyarıları görüntülenemedi"
+        assert len(elements) >= 1, "'Required' alan uyarilari görüntülenemedi"
 
     def verify_login_of_page(self):
         user_el = self.wait_for_element_to_be_visible(self.USER_NAME_INPUT)
         pass_el = self.wait_for_element_to_be_visible(self.USER_PASSWORD)
 
-        assert user_el is not None and user_el.is_displayed(), "Username alanı görünmüyor"
-        assert pass_el is not None and pass_el.is_displayed(), "Password alanı görünmüyor"
+        assert user_el is not None and user_el.is_displayed(), "Username alani görünmüyor"
+        assert pass_el is not None and pass_el.is_displayed(), "Password alani görünmüyor"
 
     def verify_login_of_page(self):
-        # Düz find yerine bekleme yapan metodu kullanıyoruz:
+        # Düz find yerine bekleme yapan metodu kullaniyoruz:
         user_el = self.wait_for_element_to_be_visible(self.USER_NAME_INPUT)
         pass_el = self.wait_for_element_to_be_visible(self.USER_PASSWORD)
 
-        assert user_el is not None and user_el.is_displayed(), "Username alanı görünmüyor"
-        assert pass_el is not None and pass_el.is_displayed(), "Password alanı görünmüyor"
+        assert user_el is not None and user_el.is_displayed(), "Username alani görünmüyor"
+        assert pass_el is not None and pass_el.is_displayed(), "Password alani görünmüyor"
     def verify_title_of_page(self):
         return self.driver.title

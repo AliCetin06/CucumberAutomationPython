@@ -3,7 +3,7 @@ from pages.base_page import BasePage
 
 
 class CandidatesPage(BasePage):
-    # Locator'lar (Java @FindBy ve By.xpath karşılığı Tuple tanımlamaları)
+    # Locator'lar (Java @FindBy ve By.xpath karşiliği Tuple tanimlamalari)
     TITLE_OF_PAGE = (By.XPATH, "//a[text()='Candidates']")
     JOB_TITLE = (By.XPATH, "//div[text()='Account Assistant']")
     VACANCY = (By.XPATH, "//a[text()='Associate IT Manager']")
@@ -26,15 +26,15 @@ class CandidatesPage(BasePage):
         assert element.is_displayed(), "Title is not shown on page"
 
     def select_job_title(self):
-        # Dropdown açılır
+        # Dropdown açilir
         self.click(self.JOB_TITLE_DROPDOWN)
-        # ActionChains ile elemente gidip tıklanır
+        # ActionChains ile elemente gidip tiklanir
         job_element = self.find(self.JOB_TITLE)
         self.action.move_to_element(job_element).click().perform()
 
     def fillout_page(self):
         self.select_job_title()
-        # Yorum satırına alınan alanlar gerektiğinde aktif edilebilir:
+        # Yorum satirina alinan alanlar gerektiğinde aktif edilebilir:
         # dropdowns = self.find_elements(self.DROPDOWN_LIST)
         # for item in dropdowns:
         #     self.wait_for_element_to_be_clickable(item)
