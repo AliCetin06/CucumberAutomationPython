@@ -5,7 +5,7 @@ from pages.base_page import BasePage
 class UserListingPage(BasePage):
 
     # Locator'lar (Java @FindBy karşılıkları)
-    CHOOSING_ADMIN = (By.XPATH, "(//div[@role='row'][(.//div[@role='cell'])[2]//div[text()='Admin']]//i[contains(@class,'bi-pencil')]")
+    CHOOSING_ADMIN = (By.XPATH, "//div[@role='row'][(.//div[@role='cell'])[2]//div[text()='Admin']]//i[contains(@class,'bi-pencil')]")
     VERIFYING_TITLE = (By.XPATH, "//div[@class='oxd-topbar-header-title']")
 
     def __init__(self, driver):
