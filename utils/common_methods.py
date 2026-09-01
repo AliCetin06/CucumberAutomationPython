@@ -18,6 +18,7 @@ class CommonMethods:
         """
         wait = WebDriverWait(self.driver, timeout)
         return wait.until(EC.invisibility_of_element_located(locator_or_element))
+
     def wait_for_element_to_be_visible(self, locator_or_element: Union[Tuple[str, str], WebElement], timeout: int = 60):
         """
         Elementin görünür olmasini bekler.
@@ -26,11 +27,9 @@ class CommonMethods:
         """
         wait = WebDriverWait(self.driver, timeout)
 
-        # Eğer gönderilen parametre Tuple (örn: (By.NAME, 'username')) ise:
         if isinstance(locator_or_element, tuple):
             return wait.until(EC.visibility_of_element_located(locator_or_element))
 
-        # Eğer doğrudan WebElement gönderildiyse:
         return wait.until(EC.visibility_of(locator_or_element))
 
     def wait_for_element_to_be_clickable(self, locator_or_element: Union[Tuple[str, str], WebElement],
@@ -38,8 +37,15 @@ class CommonMethods:
         """
         Elementin tiklanabilir olmasini bekler.
         Hem Tuple (locator) hem de WebElement kabul eder.
+        Tiklanabilir olmadan önce elementi görünür alana kaydirir (Edge/Firefox'ta
+        viewport disindaki elementler bazen clickable sayilmiyor).
         """
         wait = WebDriverWait(self.driver, timeout)
+        element = wait.until(EC.presence_of_element_located(locator_or_element)) \
+            if isinstance(locator_or_element, tuple) else locator_or_element
+
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
         return wait.until(EC.element_to_be_clickable(locator_or_element))
 
     def switch_to_new_window(self, current_window: str):
