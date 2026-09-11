@@ -40,7 +40,7 @@ class DriverUtils:
         Hangi tarayicinin başlatilacağini belirler.
         Öncelik sirasi:
           1) BROWSER ortam değişkeni (CI'da matrix strategy bunu set eder)
-          2) config.properties içindeki 'browser' key'i
+          2) config.properties içindeki 'browser' key'is
           3) varsayilan: chrome
         """
         browser = os.environ.get("BROWSER")
@@ -53,6 +53,15 @@ class DriverUtils:
     @classmethod
     def _build_chrome_driver(cls, headless: bool) -> webdriver.Chrome:
         options = ChromeOptions()
+
+        # Tarayici dilini isletim sistemi/CI locale'inden bagimsiz olarak
+        # Ingilizce'ye sabitliyoruz. Aksi halde Turkce kurulu makinelerde
+        # (veya Turkce locale'li CI runner'larda) UI Turkce aciliyor ve
+        # metin bazli locator'lar ("Admin", "Forgot your password?",
+        # "Required", "Invalid credentials") eslesmiyordu.
+        options.add_argument("--lang=en-US")
+        options.add_experimental_option("prefs", {"intl.accept_languages": "en-US,en"})
+
         if headless:
             options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
@@ -69,6 +78,11 @@ class DriverUtils:
     @classmethod
     def _build_firefox_driver(cls, headless: bool) -> webdriver.Firefox:
         options = FirefoxOptions()
+
+        # Firefox icin ayni Ingilizce sabitleme - intl.accept_languages
+        # preference'i tarayici arayuz/icerik dilini kontrol eder.
+        options.set_preference("intl.accept_languages", "en-US, en")
+
         if headless:
             options.add_argument("-headless")
             options.add_argument("--width=1920")
@@ -80,6 +94,12 @@ class DriverUtils:
     @classmethod
     def _build_edge_driver(cls, headless: bool) -> webdriver.Edge:
         options = EdgeOptions()
+
+        # Edge de Chromium tabanli oldugu icin Chrome ile ayni
+        # --lang / intl.accept_languages yaklasimi gecerli.
+        options.add_argument("--lang=en-US")
+        options.add_experimental_option("prefs", {"intl.accept_languages": "en-US,en"})
+
         if headless:
             options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
