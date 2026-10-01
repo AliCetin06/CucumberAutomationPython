@@ -6,7 +6,7 @@ Feature: We are testing the login functionality in this feature
 
   Background:
     Given user open website
-    Then verify user is on login page
+    Then verify user is on login page›
 
   @smoke @chirag @ie
   Scenario: verify Login Sucessful With Valid Credentials
