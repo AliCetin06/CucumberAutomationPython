@@ -34,6 +34,6 @@ def step_check_body(context, expected_name):
     body = context.response.json()
 
     # body["name"] -> API'nin döndürdüğü JSON içindeki "name" alanini okuyoruz
-    # Bunu feature dosyasindaki beklenen isimle karşilaştiriyoruz
+    # Bunu feature dosyasindaki beklenen isimle karşilaştiriyoruzz
     assert body["name"] == expected_name, \
         f"Beklenen isim {expected_name}, gelen {body.get('name')}"
