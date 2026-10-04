@@ -14,7 +14,7 @@ Feature: We are testing the login functionality in this feature
     Then verify user is navigated to home page
 
   # Scenario Outline way for all negative scenarios  , there is no error message with blank credintial ,so did not add to Outline
-  @regression @yusuf
+  @regression @ali
   Scenario Outline: verify Error Message UnSuccesful With InValid Credentials
     When user login with invalid credintial username "<username>" and password "<password>"
     Then verify invalid login error message is displayed
