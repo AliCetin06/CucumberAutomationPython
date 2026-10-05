@@ -5,6 +5,22 @@ on:
   pull_request:
     branches: [ "main" ]
 jobs:
+  # ---------- YENI: Postman API testleri ----------
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Postman CLI kur
+        run: curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Postman CLI login
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Postman collection calistir
+        run: |
+          postman collection run "15051020-fe5c4fa9-ca49-4a0d-b7c7-47361109d613" \
+            -e "15051020-43dc82e1-756a-4aca-a5a1-e524d1eda04f"
+
+  # ---------- MEVCUT: Behave UI testleri ----------
   test:
     runs-on: ubuntu-latest
     strategy:
