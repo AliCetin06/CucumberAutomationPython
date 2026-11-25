@@ -63,3 +63,14 @@ def verify_required_field_error(context):
 def click_forgot_password(context):
     """Navigate to the reset password flow."""
     context.login_page.clicking_forget_password()
+
+@when('the user logs in with only username "{username}"')
+def login_with_only_username(context, username):
+    """Edge case: password field is left empty."""
+    context.login_page.do_login(username, "")
+
+
+@when('the user logs in with only password "{password}"')
+def login_with_only_password(context, password):
+    """Edge case: username field is left empty."""
+    context.login_page.do_login("", password)

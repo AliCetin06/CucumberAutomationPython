@@ -3,9 +3,9 @@ Feature: Menu item validation job options
   Tester -Ali
 
   Background:
-    Given user open website
-    Then verify user is on login page
-    When user login with username "login.username" and password "login.password"
+    Given the user opens the website
+    Then the login page is displayed
+    When the user logs in with valid credentials
     And verify user is navigated to home page
 
   Scenario: validation of job options present on Adminpage

@@ -35,3 +35,30 @@ Feature: Login functionality
     When user enter invalid username on forget password page
     And click on reset password button
     Then verify invalid username error message is displayed on forget password page
+
+  @smoke @regression
+  Scenario: Logged in user can open the Admin tab
+    When the user logs in with valid credentials
+    Then verify user is navigated to home page
+    When user click to Admin tab
+
+  @regression @edge
+  Scenario: Login fails with only username filled
+    When the user logs in with only username "Admin"
+    Then a required field error message is displayed
+
+  @regression @edge
+  Scenario: Login fails with only password filled
+    When the user logs in with only password "admin123"
+    Then a required field error message is displayed
+
+  @regression @security
+  Scenario Outline: Login is rejected for <description>
+    When the user logs in with username "<username>" and password "<password>"
+    Then an invalid credentials error message is displayed
+
+    Examples:
+      | description              | username | password    |
+      | SQL injection input      | ' OR '1'='1 | ' OR '1'='1 |
+      | special characters       | !@#$%^&* | !@#$%^&*    |
+      | wrong password case      | Admin    | ADMIN123    |
